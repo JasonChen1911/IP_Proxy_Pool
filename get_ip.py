@@ -9,7 +9,7 @@
 import requests
 from bs4 import BeautifulSoup
 import time
-from IP_Proxy_Pool.settings import *
+from settings import *
 
 
 

@@ -7,7 +7,7 @@
 # @description  : 
 
 import redis
-from IP_Proxy_Pool.settings import HOST, PORT, REDISNAME, MAXNUM, MINNUM
+from settings import HOST, PORT, REDISNAME
 
 class redisClient(object):
     def __init__(self, host=HOST, port=PORT):

@@ -7,10 +7,10 @@
 # @description  : 调度器
 
 
-from IP_Proxy_Pool.get_ip import *
-from IP_Proxy_Pool.database_manager import *
-from IP_Proxy_Pool.settings import *
-from IP_Proxy_Pool.web_api import *
+from get_ip import *
+from database_manager import *
+from settings import *
+from web_api import *
 from multiprocessing import Process
 import time
 
