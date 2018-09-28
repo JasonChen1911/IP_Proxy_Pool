@@ -16,7 +16,7 @@ app = Flask(__name__)
 @app.route('/')
 def index():
 
-    return "Welcome the IP_Proxy_Pool!\n/get 获取一个代理IP\n /count 获取代理池中的IP数量"
+    return "Welcome the IP_Proxy_Pool!  /get 获取一个代理IP  /count 获取代理池中的IP数量"
 
 @app.route('/get')
 def get_proxy():
