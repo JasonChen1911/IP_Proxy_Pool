@@ -7,41 +7,38 @@
 # @description  : 
 
 import redis
-from settings import HOST, PORT, REDISNAME
+from settings import *
 
 class redisClient(object):
     def __init__(self, host=HOST, port=PORT):
         self._db = redis.Redis(host, port, decode_responses=True)
-
-    def get(self, count=1):
-        proxies = self._db.lrange(REDISNAME, 0, count-1)
-        self._db.ltrim(REDISNAME, count, -1)
+    # 获取一定数量的代理IP
+    def get(self, database, count=1):
+        proxies = self._db.lrange(database, 0, count-1)
+        self._db.ltrim(database, count, -1)
         return proxies
 
-    def put(self, proxy):
-        self._db.rpush(REDISNAME, proxy)
 
-    def puts(self, proxies):
-        self._db.rpush(REDISNAME, *proxies)
+    def put(self, database, proxy):
+        self._db.rpush(database, proxy)
 
-    # 从右侧获取代理ip
-    def pop(self):
-        if self._db.llen(REDISNAME):
-            return self._db.rpop(REDISNAME)
+    def puts(self, database, proxies):
+        self._db.rpush(database, *proxies)
+
+    # 从右侧获取代理IP
+    def pop(self, database):
+        if self._db.llen(database):
+            ip = self._db.rpop(database)
+            return ip
         else:
-            return '代理IP池空了！！！'
-    def count(self):
-        return self._db.llen(REDISNAME)
+            return 0
+    def count(self, database):
+        return self._db.llen(database)
 
-    def del_key(self):
-        self._db.delete(REDISNAME)
+    def del_key(self, database):
+        self._db.delete(database)
 
 if __name__ == '__main__':
     rdb = redisClient()
-    ips = ["http://192.168.0.1:8888", "http://192.168.0.1:8888", "http://192.168.0.1:8888", "http://192.168.0.1:8888", "http://192.168.0.1:8888"]
-    for ip in ips:
-        print(ip)
-        rdb.put(ip)
-    rdb.puts(ips)
-    address = rdb.count()
-    print(address)
+    proxies = rdb.get(REDISNAME, 12)
+    print(proxies)

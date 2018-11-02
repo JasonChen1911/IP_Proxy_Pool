@@ -9,6 +9,7 @@
 from flask import Flask
 import time
 from database_manager import *
+from settings import *
 
 
 app = Flask(__name__)
@@ -21,13 +22,13 @@ def index():
 @app.route('/get')
 def get_proxy():
     rdb = redisClient()
-    ip = rdb.pop()
+    ip = rdb.pop(REDISNAME)
     return ip
 
 @app.route('/count')
 def get_count():
     rdb = redisClient()
-    count = rdb.count()
+    count = rdb.count(REDISNAME)
     return str(count)
 
 if __name__ == '__main__':

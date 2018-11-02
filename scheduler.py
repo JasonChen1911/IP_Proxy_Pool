@@ -14,8 +14,6 @@ from web_api import *
 from multiprocessing import Process
 import time
 
-
-
 '''
     1、ip池的定期检测
     2、ip池第一次启动时注入ip
@@ -30,25 +28,34 @@ class IPProxyPoolGenerater(object):
     def ip_generater(self):
         # 判断proxies是否存在，存在的话清空
         print("IP池生成器启动")
-        rdb = redisClient()
-        print(rdb)
-        rdb.del_key()
         # 获取代理ip列表
-        ip_lists = webGetter().IPLists()
-        print("获取到的IP：")
-        print(ip_lists)
-        if not ip_lists:
-            print("获取代理ip 失败")
-        rdb.puts(ip_lists)
+        webGetter().IP_run()
+
+    def used_ip_checker(self):
+        print("检测已用IP的可用性")
+        rdb = redisClient()
+        used_len = rdb.count(USERDPROXIES)
+        IP_Lists = rdb.get(USERDPROXIES, used_len)
+        for ip in IP_Lists:
+            value = webGetter().is_validity(ip)
+            if value:
+                rdb.put(REDISNAME, ip)
+
+    def unused_ip_checker(self):
+        print("未用IP可用性检测")
+        #rdb = redisClient()
+        pass
 
     def schedul_checker(self):
         print("IP池检测器启动")
         rdb = redisClient()
         while True:
-            count = rdb.count()
+            count = rdb.count(REDISNAME)
             print("IP池当前代理数量为%s！" %(count))
             if count < MINNUM:
                 self.ip_generater()
+            if count < MAXNUM:
+                self.used_ip_checker()
             time.sleep(self._circle)
 
 
